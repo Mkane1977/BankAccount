@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Account</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script>
+        async function submitForm(event) {
+            event.preventDefault(); // Prevent default form submission
+
+            const form = document.getElementById('registerForm');
+            const data = {
+                username: form.username.value,
+                password: form.password.value,
+                name: form.name.value,
+                email: form.email.value,
+                phone: form.phone.value
+            };
+
+            try {
+                const response = await fetch('/create_account', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    document.getElementById('success-message').textContent =
+                        "Account created successfully! A verification code has been sent to your phone.";
+                    document.getElementById('verification-section').style.display = "block";
+                    document.getElementById('register-section').style.display = "none";
+                } else {
+                    const errorText = await response.text();
+                    document.getElementById('error-message').textContent = errorText;
+                }
+            } catch (error) {
+                document.getElementById('error-message').textContent = "An error occurred. Please try again.";
+            }
+        }
+
+        async function submitVerification(event) {
+            event.preventDefault();
+
+            const userId = document.getElementById('userId').value;
+            const code = document.getElementById('verificationCode').value;
+
+            try {
+                const response = await fetch('/verify', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, code: code })
+                });
+
+                if (response.ok) {
+                    alert("Verification successful! You can now log in.");
+                    window.location.href = '/';
+                } else {
+                    const errorText = await response.text();
+                    document.getElementById('verification-error').textContent = errorText;
+                }
+            } catch (error) {
+                document.getElementById('verification-error').textContent = "An error occurred. Please try again.";
+            }
+        }
+    </script>
+</head>
+<body>
+<div class="form-container" id="register-section">
+    <h2 id="error-message" class="error-message"></h2>
+    <h2>Create Account</h2>
+    <form id="registerForm" onsubmit="submitForm(event)">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone" required>
+        <button type="submit">Create Account</button>
+    </form>
+</div>
+
+<div class="form-container" id="verification-section" style="display: none;">
+    <h2 id="verification-error" class="error-message"></h2>
+    <h2>Verify Your Account</h2>
+    <p id="success-message"></p>
+    <form id="verificationForm" onsubmit="submitVerification(event)">
+        <input type="hidden" id="userId" name="userId" value="">
+        <label for="verificationCode">Enter Verification Code:</label>
+        <input type="text" id="verificationCode" name="verificationCode" required>
+        <button type="button" onclick="verifyPhoneNumber()">Verify</button>
+    </form>
+</div>
+</body>
+</html>

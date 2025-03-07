@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+</head>
+<body>
+<div class="form-container">
+    <h2>Login</h2>
+    <form id="loginForm" onsubmit="submitLogin(event)">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required>
+        <button type="submit">Log In</button>
+    </form>
+    <p><a href="/register">Create a new account</a></p>
+    <p><a href="/forgot-password">Forgot Password?</a></p>
+</div>
+
+<!-- JavaScript code -->
+<script>
+    function submitLogin(event) {
+        event.preventDefault(); // Prevent the default form submission behavior
+
+        // Get the form data
+        const username = document.getElementById('username').value;
+        const password = document.getElementById('password').value;
+
+        // Send the login request
+        fetch('/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+        })
+            .then(response => {
+                if (response.ok && response.redirected) {
+                    window.location.href = response.url; // Follow redirect
+                } else if (!response.ok) {
+                    alert('Invalid login credentials.');
+                }
+            })
+            .catch(error => console.error('Error during login:', error));
+
+    }
+</script>
+</body>
+</html>

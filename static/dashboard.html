@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" type="text/css" href="/static/style.css">
+    <link rel="icon" type="image/x-icon" href="/static/favicon.ico">
+    <script>
+        async function fetchDashboardData() {
+            try {
+                const response = await fetch('/dashboard_data', { method: 'GET' });
+                if (!response.ok) {
+                    document.getElementById('error').textContent = `Error: ${response.statusText}`;
+                    return;
+                }
+                const data = await response.json();
+                document.getElementById('name').textContent = data.name;
+                document.getElementById('account_number').textContent = data.account_number;
+                document.getElementById('email').textContent = data.email;
+                document.getElementById('phone').textContent = data.phone;
+                document.getElementById('balance').textContent = `$${data.balance.toFixed(2)}`;
+            } catch (error) {
+                document.getElementById('error').textContent = `Error fetching data: ${error.message}`;
+            }
+        }
+        fetchDashboardData();
+    </script>
+</head>
+<body>
+<div class="form-container">
+    <h1>Welcome to Your Dashboard</h1>
+    <div id="error" class="error-message"></div>
+    <p><strong>Name:</strong> <span id="name"></span></p>
+    <p><strong>Account Number:</strong> <span id="account_number"></span></p>
+    <p><strong>Email:</strong> <span id="email"></span></p>
+    <p><strong>Phone:</strong> <span id="phone"></span></p>
+    <p><strong>Balance:</strong> <span id="balance"></span></p>
+    <p><a href="/logout">Logout</a></p>
+
+</div>
+</body>
+</html>

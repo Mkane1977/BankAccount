@@ -1,0 +1,3 @@
+/Users/mercurykane/ClionProjects/BankAccount/build/CMakeFiles/BankAccount.dir
+/Users/mercurykane/ClionProjects/BankAccount/build/CMakeFiles/edit_cache.dir
+/Users/mercurykane/ClionProjects/BankAccount/build/CMakeFiles/rebuild_cache.dir
